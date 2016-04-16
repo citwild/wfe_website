@@ -1,1 +1,9 @@
-wfe.pem
+# Sensitive information
+*.pem
+
+# Node stuff
+node_modules/
+
+# JetBrains IDE
+*.iml
+.idea
