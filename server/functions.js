@@ -69,4 +69,4 @@ exports.localAuth = function (username, password) {
   });
 
   return deferred.promise;
-}
+};

@@ -7,36 +7,26 @@
 
   <div id="local" class="collapse">
     <a data-toggle="collapse" href="#local-sign-in" class="btn btn-default btn-md" role="button">Login with existing account</a>
-    <a data-toggle="collapse" href="#local-reg" class="btn btn-default btn-md" role="button">Request an account</a>
+    <a data-toggle="collapse" href="#submit-request" class="btn btn-default btn-md" role="button">request an account</a>
   </div>
 
   <form id="local-sign-in" class="collapse" action="/login" method="post">
-    <div>
-        <p></p>
-        <label>Username:</label>
-        <input type="text" name="username"/>
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password"/>
-    </div>
-    <div>
-        <input type="submit" class="btn btn-primary btn-sm" value="Log In"/>
-    </div>
+    <label>Username:</label>
+    <input type="text" name="username"/>
+
+    <label>Password:</label>
+    <input type="password" name="password"/>
+
+    <input type="submit" class="btn btn-primary btn-sm" value="Log In"/>
   </form>
 
-  <form id="local-reg" class="collapse" action="/local-reg" method="post">
-    <div>
-        <p></p>
-        <label>Full Name:</label>
-        <input type="text" name="name"/>
-    </div>
-    <div>
-        <label>Email ID:</label>
-        <input type="email" name="email"/>
-    </div>
-    <div>
-        <input type="submit" class="btn btn-primary btn-sm" value="Register"/>
-    </div>
+  <form id="submit-request" class="collapse" action="/account/submit-request" method="post">
+    <label>Full Name</label>
+    <input type="text" name="name"/>
+
+    <label>Email</label>
+    <input type="email" name="email"/>
+
+    <input type="submit" class="btn btn-primary btn-sm" value="Request an Account"/>
   </form>
 </div>

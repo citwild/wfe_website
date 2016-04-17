@@ -1,0 +1,13 @@
+<!-- The template for admins to send user invites -->
+<div class="jumbotron">
+    <h1>Invite a User</h1>
+    <p>Invite a person to create a WFE account</p>
+
+    <form id="invite-user" action="/admin/sendInvite/send" method="post">
+        <label>Invitee's email</label>
+        <input type="email" name="email"/>
+
+        <input type="submit" class="btn btn-primary btn-sm" value="Send Invite"/>
+    </form>
+
+</div>
