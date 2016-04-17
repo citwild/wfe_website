@@ -5,17 +5,17 @@ var fs = require('fs');
 
 var configFileLocation = process.env.HOME + '/config.json';
 
-var AppConfig = function() {};
-AppConfig.prototype.config = {};
-AppConfig.prototype.init = function() {
-    this.config = JSON.parse(fs.readFileSync(configFileLocation, 'utf-8'));
-};
+function conf() {
+    var dbInfo;
+    var adminEmails;
+    
+    this.init = function init() {
+        var config = JSON.parse(fs.readFileSync(configFileLocation, 'utf-8'));
+        
+        this.adminEmails = config.adminEmails;
+        this.dbInfo      = config.db;
+    };
+}
 
-// var AppConfigurations = {
-//     configurations: {},
-//     init: function init() {
-//         configurations = JSON.parse(fs.readFileSync(configFileLocation, 'utf-8'));
-//     }
-// };
 
-exports.AppConfig = new AppConfig();
+exports.conf = new conf();

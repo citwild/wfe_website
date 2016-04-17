@@ -8,8 +8,18 @@ var express        = require('express'),
     session        = require('express-session'),
     passport       = require('passport'),
     LocalStrategy  = require('passport-local'),
-    mysql          = require('mysql');
+    conf           = require('./utilities/appConfig').conf,
+    mySql          = require('./utilities/mysql-connector').connector;
 
+//*******DEMONSTRATING CONFIG SETUP*********
+conf.init();
+//*****DEMONSTRATING MYSQL CONNECTION*******
+console.log(mySql);
+db = conf.dbInfo;
+mySql.createConnection(db.host, db.user, db.password, db.database);
+mySql.queryAllAccounts();
+mySql.closeConnection();
+//******************************************
 
 var config = require('./config.js'),    //config file contains all tokens and other private info
     funct  = require('./functions.js'); //funct file contains our helper functions for our Passport and database work
