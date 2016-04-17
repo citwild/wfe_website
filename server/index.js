@@ -172,9 +172,9 @@ app.post('/create/account/send', function(req, res){
 
     // createAccount(userInfo);
 
-    console.log(body);
+    console.log(userInfo);
     res.redirect('/');  // probably redirect user to main UI
-})
+});
 
 //sends the request through our local signup strategy, and if successful takes user to homepage, otherwise returns then to signin page
 app.post('/account/submit-request', passport
