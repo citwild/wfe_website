@@ -7,14 +7,33 @@ Starting with:
 
 ## Run
 
-### Install nodejs on Ubuntu
+### Install NodeJS on Ubuntu
 
 Use `apt-get`:
 ```
 sudo apt-get install nodejs
 ```
+### Include a config file
+This application is expected to connect to a MySQL database for storing information. Relevant configurations to the app, including database information, is expected to be stored locally on the server as a file titled `config.json`.
 
-### To run the node server
+The file should be located in the `$HOME`/`%USERPROFILE%` directory of the account running the server (i.e., `/home/UserName/.` for Linux and `C:\Users\UserName\.` for Windows).
+
+The content of `config.json` should look like this:
+```
+{
+  "adminEmails": [
+    "test@test.com"
+  ],
+  "db": {
+    "host": "the host",
+    "user": "the user",
+    "password": "the password",
+    "database": "the database itself"
+  }
+}
+```
+
+### Run the Node server
 ```
 node server/index.js
 ```
@@ -91,3 +110,4 @@ http://www.cyberciti.biz/tips/nohup-execute-commands-after-you-exit-from-a-shell
 More on dev ideas moved to `dev.md`
 
 1. To control access fo S3 objects, we could use the same logic to control access to password data
+
