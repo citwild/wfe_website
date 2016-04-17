@@ -3,6 +3,7 @@ var express        = require('express'),
     logger         = require('morgan'),
     cookieParser   = require('cookie-parser'),
     bodyParser     = require('body-parser'),
+    nodemailer     = require('nodemailer');
     methodOverride = require('method-override'),
     session        = require('express-session'),
     passport       = require('passport'),
@@ -130,22 +131,50 @@ app.get('/signin', function(req, res){
 // ADMIN PAGES
 
 // Send Account Invite Page
-app.get('/admin/sendInvite', function(req, res){
+app.get('/admin/sendInvite', function(req, res) {
     res.render('admin/sendInvite');
 });
 
 // Send Account Invite Page
-app.post('/admin/sendInvite/send', function(req, res){
-    var email = req.body.email;
+app.post('/admin/sendInvite/send', function(req, res) {
+    // TODO fully implement and test nodemailer
+    var email = req.body.email,
+        transporter = nodemailer.createTransport('smtps://user%40gmail.com:pass@smtp.gmail.com');
+
+    var mailOptions = {
+        from: '"WFE Admin" <user@gmail.com>',
+        to: email,
+        subject: "You're Invited to Use the Wide-Field Ethnography Platform!",
+        html: "<p>this is a test</p>"
+
+    };
+
+    // transporter.sendMail(mailOptions, function(err, info) {
+    //     if (err) {
+    //         return console.log(err);
+    //     }
+    //     console.log('Message sent:' + info.response);
+    // });
     res.render('admin/inviteSent');
 });
 
 
-// CREATE ACCOUNT
-// //creates an account
-// app.post('/create/account', function(req, res){
-//     res.render('account/createAccount');
-// });
+// ACCOUNT CREATION
+
+// For users to create their account
+app.get('/create/account', function(req, res){
+    res.render('account/createAccount');
+});
+
+// Creates the account
+app.post('/create/account/send', function(req, res){
+    var userInfo = req.body;
+
+    // createAccount(userInfo);
+
+    console.log(body);
+    res.redirect('/');  // probably redirect user to main UI
+})
 
 //sends the request through our local signup strategy, and if successful takes user to homepage, otherwise returns then to signin page
 app.post('/account/submit-request', passport
