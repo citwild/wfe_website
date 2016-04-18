@@ -14,7 +14,6 @@ var express        = require('express'),
 //*******DEMONSTRATING CONFIG SETUP*********
 conf.init();
 //*****DEMONSTRATING MYSQL CONNECTION*******
-console.log(mySql);
 db = conf.dbInfo;
 mySql.createConnection(db.host, db.user, db.password, db.database);
 mySql.queryAllAccounts();
@@ -172,15 +171,21 @@ app.post('/admin/sendInvite/send', function(req, res) {
 // ACCOUNT CREATION
 
 // For users to create their account
-app.get('/create/account', function(req, res){
+app.get('/createAccount', function(req, res){
+    // Invitees are sent a token query parameter
+    var inviteToken = req.query.invite;
+
+    // pass token along to form...
+
     res.render('account/createAccount');
 });
 
 // Creates the account
-app.post('/create/account/send', function(req, res){
+app.post('/createAccount/submit', function(req, res){
     var userInfo = req.body;
 
-    // createAccount(userInfo);
+    // validateInput();         <-- for form inputs and checking the token
+    // createAccount(userInfo); <-- for storing the user info into the database
 
     console.log(userInfo);
     res.redirect('/');  // probably redirect user to main UI

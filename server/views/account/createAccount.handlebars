@@ -3,7 +3,7 @@
     <p>Thank you for your interest in using the Wide-Field Ethnography platform!</p>
     <p>Enter the requested information below to create your account.</p>
 
-    <form id="create-account" action="/create/account/send" method="post">
+    <form id="create-account" action="/createAccount/submit" method="post">
         <!-- TODO: form validation -->
         <label for="firstname">First Name</label>
         <input type="text" id="firstname" name="firstname"/>
@@ -19,6 +19,11 @@
 
         <label for="password-confirm">Confirm Password</label>
         <input type="password" id="password-confirm" name="password-confirm"/>
+
+        <label for="invite-token">Your invite token is</label>
+        <input type="text" id="invite-token" name="invite-token" readonly="readonly"
+            value=""
+            size="40"/>
 
         <input type="submit" class="btn btn-primary btn-sm" value="Send Invite"/>
     </form>
