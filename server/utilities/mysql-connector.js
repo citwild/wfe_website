@@ -19,16 +19,25 @@ function connector() {
             console.log("There was an error connecting to the MySQL database: ", err);
         }
     };
-    
+
+    // for testing/demonstration purposes
     this.queryAllAccounts = function queryAllAccounts() {
-        this.connection.query('SELECT * from user_account', function(err, rows, fields){
-            if (!err) {
+        this.connection.query('SELECT * FROM user_account', function(err, rows, fields) {
+            if (!err)
                 console.log('Retrieved rows: ', rows);
-            } else {
+            else
                 console.log('Error performing query.');
-            }
         });
     };
+
+    // save account to user_account table
+    this.insertAccount = function insertAccount() {
+        this.connection.query('INSERT INTO', function(err, rows, fields) {
+
+        });
+    };
+
+    // get password based on email, validate password?
 
     this.closeConnection = function closeConnection() {
         this.connection.end();

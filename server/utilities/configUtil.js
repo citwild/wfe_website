@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var configFileLocation = process.env.HOME + '/config.json';
 
-function conf() {
+function configUtil() {
     var dbInfo;
     var adminEmails;
     
@@ -18,4 +18,4 @@ function conf() {
 }
 
 
-exports.conf = new conf();
+exports.configUtil = new configUtil();
