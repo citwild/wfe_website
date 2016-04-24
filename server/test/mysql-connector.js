@@ -4,7 +4,7 @@
 
 var assert = require('chai').assert;
 
-var mySql = require('../utilities/mysql-connector');
+var mySql = require('../utilities/db/db');
 
 describe('connector', function() {
     describe('createConnection', function () {

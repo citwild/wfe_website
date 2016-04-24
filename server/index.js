@@ -8,17 +8,26 @@ var express        = require('express'),
     session        = require('express-session'),
     passport       = require('passport'),
     LocalStrategy  = require('passport-local'),
-    conf           = require('./utilities/configUtil').configUtil,
-    mysql          = require('./utilities/mysql-connector').connector;
+    ConfigUtil     = require('./utilities/configUtil'),
+    DB             = require('./utilities/db/db'),
+    UserAccount    = require('./utilities/models/userAccount');
 
 //*******DEMONSTRATING CONFIG SETUP*********
-conf.init();
+var appConfig = new ConfigUtil.init();
 //*****DEMONSTRATING MYSQL CONNECTION*******
-db = conf.dbInfo;
-mysql.createConnection(db.host, db.user, db.password, db.database);
-mysql.queryAllAccounts();
-mysql.closeConnection();
-//******************************************
+dbinfo = appConfig.dbInfo;
+var db = new DB();
+db.createPool(dbinfo.host, dbinfo.user, dbinfo.password, dbinfo.database);
+db.getAllAccounts();
+//*******DEMONSTRATING SAVING ACCOUNT*******
+//var user = new UserAccount({
+//    firstName:'Tester',
+//    lastName:'Test',
+//    email:'funtest@test.com',
+//    password:'password',
+//    permissions:'test'
+//});
+//db.insertAccount(user.data);
 
 var config = require('./config.js'),    //config file contains all tokens and other private info
     funct  = require('./functions.js'); //funct file contains our helper functions for our Passport and database work
@@ -27,21 +36,24 @@ var app = express();
 
 //===============PASSPORT===============
 // Use the LocalStrategy within Passport to login/”signin” users.
-passport.use('local-signin', new LocalStrategy(
-  {passReqToCallback : true}, //allows us to pass back the request to the callback
+passport.use('login', new LocalStrategy(
+  {
+      // allows us to pass back the request to the callback
+      passReqToCallback : true
+  },
   function(req, username, password, done) {
     funct.localAuth(username, password)
-        .then(function (user) {
-          if (user) {
-            console.log("LOGGED IN AS: " + user.username);
-            req.session.success = 'You are successfully logged in ' + user.username + '!';
-            done(null, user);
-          }
-          if (!user) {
-            console.log("COULD NOT LOG IN");
-            req.session.error = 'Could not log user in. Please try again.'; //inform user could not log them in
-            done(null, user);
-          }
+      .then(function (user) {
+        if (user) {
+          console.log("LOGGED IN AS: " + user.username);
+          req.session.success = 'You are successfully logged in ' + user.username + '!';
+          done(null, user);
+        }
+        if (!user) {
+          console.log("COULD NOT LOG IN");
+          req.session.error = 'Could not log user in. Please try again.'; //inform user could not log them in
+          done(null, user);
+        }
         })
         .fail(function (err){
           console.log(err.body);
@@ -68,10 +80,10 @@ passport.use('local-signup', new LocalStrategy(
           req.session.error = 'That username is already in use, please try a different one.'; 
           done(null, user);
         }
-      })
-      .fail(function accountRequestFailed(err){
-        console.log(err.body);
-      });
+    })
+    .fail(function accountRequestFailed(err){
+      console.log(err.body);
+    });
   }
 ));
 
@@ -201,7 +213,7 @@ app.post('/account/submit-request', passport
 
 //sends the request through our local login/signin strategy, and if successful takes user to homepage, otherwise returns then to signin page
 app.post('/login', passport
-  .authenticate('local-signin', {
+  .authenticate('login', {
     successRedirect: '/',
     failureRedirect: '/signin'
   })

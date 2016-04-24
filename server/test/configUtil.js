@@ -4,41 +4,39 @@
 
 var assert = require('chai').assert;
 
-var configUtil = require('../utilities/configUtil').configUtil;
+var ConfigUtil = require('../utilities/configUtil');
 
 
-describe('configUtil', function() {
+describe('ConfigUtil', function() {
     describe('init', function() {
-        beforeEach(function () {
-            configUtil.init();
-        });
-        
+        var appConfig = new ConfigUtil.init();
+
         it('should create an array of administrator emails', function() {
-            assert.isArray(configUtil.adminEmails);
+            assert.isArray(appConfig.adminEmails);
         });
 
         describe('adminEmails', function() {
             it('should have at least one email', function() {
-                assert(configUtil.adminEmails.length > 0);
+               assert(appConfig.adminEmails.length > 0);
             })
         });
         
         it('should create an object of database info', function() {
-            assert.isObject(configUtil.dbInfo);
+            assert.isObject(appConfig.dbInfo);
         });
 
         describe('dbInfo', function() {
             it('should have a host', function() {
-                assert(configUtil.dbInfo.host);
+               assert(appConfig.dbInfo.host);
             });
             it('should have a user', function() {
-                assert(configUtil.dbInfo.user);
+               assert(appConfig.dbInfo.user);
             });
             it('should have a password', function() {
-                assert(configUtil.dbInfo.password);
+               assert(appConfig.dbInfo.password);
             });
             it('should have a database', function() {
-                assert(configUtil.dbInfo.database);
+               assert(appConfig.dbInfo.database);
             });
         });
     });
