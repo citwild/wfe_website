@@ -23,20 +23,22 @@ DB.prototype.createPool = function createPool(host, user, password, database) {
 
 // for testing/demonstration purposes
 DB.prototype.getAllAccounts = function getAllAccounts() {
-    var result;
-    this.connPool.getConnection(function (err, conn) {
-        if (err) console.log(err);
-        conn.query('SELECT * FROM user_account', function (err, rows) {
-            if (!err) {
-                result = rows;
-                console.log('Retrieved rows: ', rows);
-            } else {
-                console.log('Error retrieving all accounts');
-            }
+    var connPool = this.connPool;
+    return new Promise(function(success, failure) {
+        connPool.getConnection(function (err, conn) {
+            if (err) failure(conn);
+            conn.query('SELECT * FROM user_account', function (err, rows) {
+                if (!err) {
+                    success(rows);
+                    console.log('Retrieved rows: ', rows);
+                } else {
+                    failure(rows);
+                    console.log('Error retrieving all accounts');
+                }
+            });
+            conn.release();
         });
-        conn.release();
     });
-    return result;
 };
 
 // save account to user_account table
@@ -55,25 +57,26 @@ DB.prototype.insertAccount = function insertAccount(data) {
 
 // get password based on email and password combination
 DB.prototype.getAccountByEmail = function getAccountByEmail(email) {
-    var result;
-    this.connPool.getConnection(function (err, conn) {
-        if (err) console.log(err);
-        conn.query({
-            sql   : 'SELECT * FROM user_account WHERE email = ?',
-            values: [email]
-        }, function(err, rows) {
-            if (!err) {
-                result = rows;
-                console.log('User info successfully retrieved: ', rows);
-            } else {
-                console.log('Error retrieving account with email: ', email);
-            }
+    var connPool = this.connPool;
+    return new Promise(function(success, failure) {
+        connPool.getConnection(function (err, conn) {
+            if (err) console.log(err);
+            conn.query({
+                sql   : 'SELECT * FROM user_account WHERE email = ?',
+                values: [email]
+            }, function(err, rows) {
+                if (!err) {
+                    console.log('User info successfully retrieved: ', rows);
+                    success(rows);
+                } else {
+                    console.log('Error retrieving account with email: ', email);
+                    failure(rows);
+                }
+            });
+            conn.release();
         });
-        conn.release();
     });
-    return result;
 };
-
 
 DB.prototype.closeConnection = function closeConnection() {
     this.connPool.end();
