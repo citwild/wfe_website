@@ -2,18 +2,19 @@
  * Created by milesdowe on 4/20/16.
  */
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
-var AuthUtil = function () {
-    this.saveAccount = function saveAccount(data, pool) {
-        //encrypt sensitive info
-        data.password = bcrypt.hashSync( data.password, 10 );
-        pool.insertAccount(account);
-    };
+var AuthUtil = function () {};
 
-    this.validatePassword = function validatePassword(account) {
+AuthUtil.saveAccount = function saveAccount(data, pool) {
+    //encrypt sensitive info
+    data.password = bcrypt.hashSync( data.password, 10 );
+    pool.insertAccount(account);
+};
 
-    };
-}
+AuthUtil.validatePassword = function validatePassword(data, pool) {
+    var rows = pool.getAccountByEmail(data.email);
+    console.log(rows);
+};
 
 module.exports = AuthUtil();

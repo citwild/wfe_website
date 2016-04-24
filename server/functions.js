@@ -1,6 +1,7 @@
 // functions.js/
 var bcrypt = require('bcryptjs'),
     Q = require('q'),
+    DB = require('./utilities/db/db'),
     config = require('./config.js'), //config file contains all tokens and other private info
     db = require('orchestrate')(config.db); //config.db holds Orchestrate token
 
@@ -44,10 +45,11 @@ exports.localReg = function (username, password) {
     //if user exists check if passwords match (use bcrypt.compareSync(password, hash); // true where 'hash' is password in DB)
       //if password matches take into website
   //if user doesn't exist or password doesn't match tell them it failed
-exports.localAuth = function (username, password) {
+exports.localAuth = function (email, password, mysql) {
   var deferred = Q.defer();
-
-  db.get('local-users', username)
+console.log('INSIDE AUTHENTICATION METHOD');
+    mysql.getAccountByEmail(email)
+  // db.get('local-users', email)
   .then(function (result){
     console.log("FOUND USER");
     var hash = result.body.password;

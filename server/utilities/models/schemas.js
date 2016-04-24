@@ -3,8 +3,8 @@
  */
 schemas = {
     userAccount: {
-        firstName: null,
-        lastName: null,
+        first_name: null,
+        last_name: null,
         email: null,
         password: null,
         permissions: null

@@ -23,52 +23,55 @@ DB.prototype.createPool = function createPool(host, user, password, database) {
 
 // for testing/demonstration purposes
 DB.prototype.getAllAccounts = function getAllAccounts() {
-    try {
-        this.connPool.getConnection(function (err, connection) {
-            connection.query('SELECT * FROM user_account', function (err, rows, fields) {
-                if (!err)
-                    console.log('Retrieved rows: ', rows);
-                else
-                    console.log('Error retrieving all accounts');
-            });
-            connection.release();
+    var result;
+    this.connPool.getConnection(function (err, conn) {
+        if (err) console.log(err);
+        conn.query('SELECT * FROM user_account', function (err, rows) {
+            if (!err) {
+                result = rows;
+                console.log('Retrieved rows: ', rows);
+            } else {
+                console.log('Error retrieving all accounts');
+            }
         });
-    } catch(err) {
-        console.log('Failed to get a connection: ', err);
-    }
+        conn.release();
+    });
+    return result;
 };
 
 // save account to user_account table
 DB.prototype.insertAccount = function insertAccount(data) {
-    this.connPool.getConnection(function (err, connection) {
-        var query = 'INSERT INTO user_account ' +
-            '( first_name, last_name, email, password, permissions ) '
-            + 'VALUES (\'' + data.firstName + '\', \'' + data.lastName + '\', \''
-            + data.email + '\', \'' + data.password + '\', \'' + data.permissions + '\')';
-
-        connection.query(query, function(err, rows, fields) {
+    this.connPool.getConnection(function (err, conn) {
+        if (err) console.log(err);
+        conn.query('INSERT INTO user_account SET ?', data, function(err) {
             if (!err)
                 console.log('User info successfully added');
             else
                 console.log('Error inserting account; Account info: ', data);
         });
-        connection.release();
+        conn.release();
     });
 };
 
 // get password based on email and password combination
-DB.prototype.getAccountByEmailAndPass = function getAccountByEmailAndPass(email, pass) {
-    this.connPool.getConnection(function (err, connection) {
-        var query = 'SELECT * FROM user_account WHERE email = \'' + email + '\' and password = \'' + pass + '\'';
-
-        connection.query(query, function(err, rows, fields) {
-            if (!err)
+DB.prototype.getAccountByEmail = function getAccountByEmail(email) {
+    var result;
+    this.connPool.getConnection(function (err, conn) {
+        if (err) console.log(err);
+        conn.query({
+            sql   : 'SELECT * FROM user_account WHERE email = ?',
+            values: [email]
+        }, function(err, rows) {
+            if (!err) {
+                result = rows;
                 console.log('User info successfully retrieved: ', rows);
-            else
-                console.log('Error retrieving account with email and password: ', email, pass);
+            } else {
+                console.log('Error retrieving account with email: ', email);
+            }
         });
-        connection.release();
+        conn.release();
     });
+    return result;
 };
 
 

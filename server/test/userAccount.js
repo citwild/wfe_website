@@ -13,8 +13,8 @@ describe('UserAccount', function() {
         it('should only accept data identified in its schema', function() {
             var userAccount = new UserAccount({});
             var testData = {
-                firstName   : "test",
-                lastName    : "testerson",
+                first_name   : "test",
+                last_name    : "testerson",
                 email       : "test@test.com",
                 password    : "atestpassword",
                 permissions : "test",
@@ -22,8 +22,8 @@ describe('UserAccount', function() {
             };
             userAccount.setData(testData);
             assert.notProperty(userAccount.data, 'garbage');
-            assert.property(userAccount.data, 'firstName');
-            assert.property(userAccount.data, 'lastName');
+            assert.property(userAccount.data, 'first_name');
+            assert.property(userAccount.data, 'last_name');
             assert.property(userAccount.data, 'email');
             assert.property(userAccount.data, 'password');
             assert.property(userAccount.data, 'permissions');
@@ -32,14 +32,14 @@ describe('UserAccount', function() {
         it('should have default values if not provided a property', function() {
             var userAccount = new UserAccount({});
             var testData = {
-                firstName: "test",
+                first_name: "test",
                 email:"test@test.com",
                 password:"atestpassword",
                 permissions:"test"
             };
             userAccount.setData(testData);
-            assert.property(userAccount.data, 'firstName');
-            assert.property(userAccount.data, 'lastName');
+            assert.property(userAccount.data, 'first_name');
+            assert.property(userAccount.data, 'last_name');
             assert.property(userAccount.data, 'email');
             assert.property(userAccount.data, 'password');
             assert.property(userAccount.data, 'permissions');

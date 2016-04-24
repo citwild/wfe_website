@@ -7,10 +7,11 @@ var express        = require('express'),
     methodOverride = require('method-override'),
     session        = require('express-session'),
     passport       = require('passport'),
-    LocalStrategy  = require('passport-local'),
+    LocalStrategy  = require('passport-local').Strategy,
     ConfigUtil     = require('./utilities/configUtil'),
     DB             = require('./utilities/db/db'),
-    UserAccount    = require('./utilities/models/userAccount');
+    UserAccount    = require('./utilities/models/userAccount')
+    AuthUtil       = require('./utilities/account/authUtil');
 
 //*******DEMONSTRATING CONFIG SETUP*********
 var appConfig = new ConfigUtil.init();
@@ -18,17 +19,17 @@ var appConfig = new ConfigUtil.init();
 dbinfo = appConfig.dbInfo;
 var db = new DB();
 db.createPool(dbinfo.host, dbinfo.user, dbinfo.password, dbinfo.database);
-//db.getAllAccounts();
-//db.getAccountByEmailAndPass('test@test.com', 'wfe123');
+db.getAllAccounts();
+// db.getAccountByEmail('test@test.com');
 //*******DEMONSTRATING SAVING ACCOUNT*******
-//var user = new UserAccount({
-//    firstName:'Tester',
-//    lastName:'Test',
+// var user = new UserAccount({
+//    first_name:'Tester',
+//    last_name:'Test',
 //    email:'funtest@test.com',
 //    password:'password',
 //    permissions:'test'
-//});
-//db.insertAccount(user.data);
+// });
+// db.insertAccount(user.data);
 
 var config = require('./config.js'),    //config file contains all tokens and other private info
     funct  = require('./functions.js'); //funct file contains our helper functions for our Passport and database work
@@ -39,12 +40,15 @@ var app = express();
 // Use the LocalStrategy within Passport to login/”signin” users.
 passport.use('login', new LocalStrategy(
   {
-      // allows us to pass back the request to the callback
+      usernameField: 'email',
       passReqToCallback : true
   },
-  function(req, email, password, done) {
-      // AuthUtil.authenticateUser(email, password, pool)
-    funct.localAuth(email, password)
+  function(req, username, password, done) {
+    // var data = {email:email, password:password}; 
+    // AuthUtil.validatePassword(data, pool);
+      console.log('ENTERING INTO LOGIN METHOD');
+      
+    funct.localAuth(username, password, db)
       .then(function (user) {
         if (user) {
           console.log("LOGGED IN AS: " + user.username);
@@ -65,7 +69,6 @@ passport.use('login', new LocalStrategy(
 // Use the LocalStrategy within Passport to register/"signup" users.
 passport.use('local-signup', new LocalStrategy(
   {
-    //allows us to pass back the request to the callback
     passReqToCallback : true
   },
   function submitAccountRequest(req, username, password, done) {
@@ -214,8 +217,8 @@ app.post('/account/submit-request', passport
 );
 
 //sends the request through our local login/signin strategy, and if successful takes user to homepage, otherwise returns then to signin page
-app.post('/login', passport
-  .authenticate('login', {
+app.post('/login',
+  passport.authenticate('login', {
     successRedirect: '/',
     failureRedirect: '/signin'
   })
