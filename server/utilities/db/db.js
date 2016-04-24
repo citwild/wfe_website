@@ -29,7 +29,7 @@ DB.prototype.getAllAccounts = function getAllAccounts() {
                 if (!err)
                     console.log('Retrieved rows: ', rows);
                 else
-                    console.log('Error performing query');
+                    console.log('Error retrieving all accounts');
             });
             connection.release();
         });
@@ -40,7 +40,7 @@ DB.prototype.getAllAccounts = function getAllAccounts() {
 
 // save account to user_account table
 DB.prototype.insertAccount = function insertAccount(data) {
-    this.connPool.getConnection(function(err, connection) {
+    this.connPool.getConnection(function (err, connection) {
         var query = 'INSERT INTO user_account ' +
             '( first_name, last_name, email, password, permissions ) '
             + 'VALUES (\'' + data.firstName + '\', \'' + data.lastName + '\', \''
@@ -50,7 +50,7 @@ DB.prototype.insertAccount = function insertAccount(data) {
             if (!err)
                 console.log('User info successfully added');
             else
-                console.log('Error inserting account');
+                console.log('Error inserting account; Account info: ', data);
         });
         connection.release();
     });
@@ -58,7 +58,17 @@ DB.prototype.insertAccount = function insertAccount(data) {
 
 // get password based on email and password combination
 DB.prototype.getAccountByEmailAndPass = function getAccountByEmailAndPass(email, pass) {
+    this.connPool.getConnection(function (err, connection) {
+        var query = 'SELECT * FROM user_account WHERE email = \'' + email + '\' and password = \'' + pass + '\'';
 
+        connection.query(query, function(err, rows, fields) {
+            if (!err)
+                console.log('User info successfully retrieved: ', rows);
+            else
+                console.log('Error retrieving account with email and password: ', email, pass);
+        });
+        connection.release();
+    });
 };
 
 

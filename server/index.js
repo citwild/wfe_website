@@ -18,7 +18,8 @@ var appConfig = new ConfigUtil.init();
 dbinfo = appConfig.dbInfo;
 var db = new DB();
 db.createPool(dbinfo.host, dbinfo.user, dbinfo.password, dbinfo.database);
-db.getAllAccounts();
+//db.getAllAccounts();
+//db.getAccountByEmailAndPass('test@test.com', 'wfe123');
 //*******DEMONSTRATING SAVING ACCOUNT*******
 //var user = new UserAccount({
 //    firstName:'Tester',
@@ -41,8 +42,9 @@ passport.use('login', new LocalStrategy(
       // allows us to pass back the request to the callback
       passReqToCallback : true
   },
-  function(req, username, password, done) {
-    funct.localAuth(username, password)
+  function(req, email, password, done) {
+      // AuthUtil.authenticateUser(email, password, pool)
+    funct.localAuth(email, password)
       .then(function (user) {
         if (user) {
           console.log("LOGGED IN AS: " + user.username);
