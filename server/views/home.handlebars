@@ -1,4 +1,3 @@
-<!-- views/home.handlebars -->
 {{#if user}}
   <div class="jumbotron">
     <h1>WFE User Authentication</h1>
@@ -9,8 +8,9 @@
       <h3 class="panel-title">Profile Information</h3>
     </div>
     <div class="panel-body">
-      <p>Username: {{user.username}}</p>
-      <p>Avatar: <img src="{{user.avatar}}"/></p>
+        {{#if user.permissions == "root"}}
+            <h4>{{user.permissions}}</h4>
+        {{/if}}
     </div>
   </div>
 
@@ -22,10 +22,6 @@
     <span class="glyphicon glyphicon-user"></span>
     Sign in
     </a>
-    <!--<a href="/create/account" class="btn btn-primary btn-lg" role="button">-->
-        <!--<span class="glyphicon glyphicon-plus"></span>-->
-        <!--Create account-->
-    <!--</a>-->
   </div>
 
 {{/if}}

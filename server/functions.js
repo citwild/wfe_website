@@ -13,7 +13,7 @@ exports.localReg = function (username, password) {
         "username": username,
         "password": hash,
         "avatar": "http://placehold.it/25x25"
-    }
+    };
     //check if username is already assigned in our database
     db.get('local-users', username)
         .then(function (result) { //case in which user already exists in db

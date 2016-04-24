@@ -1,4 +1,7 @@
 /**
+ * DB is a MySQL utility object that contains a pool of database connections
+ * and methods to perform queries on the different schemas.
+ * 
  * Created by Miles on 4/17/2016.
  */
 
@@ -42,6 +45,7 @@ DB.prototype.getAllAccounts = function getAllAccounts() {
 };
 
 // save account to user_account table
+// TODO: implement promise
 DB.prototype.insertAccount = function insertAccount(data) {
     this.connPool.getConnection(function (err, conn) {
         if (err) console.log(err);

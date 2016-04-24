@@ -1,4 +1,7 @@
 /**
+ * AuthUtil is an authorization utility that is helps validate users
+ * when they attempt to log in.
+ * 
  * Created by milesdowe on 4/20/16.
  */
 
@@ -7,15 +10,15 @@ var bcrypt = require('bcryptjs'),
 
 var AuthUtil = function () {};
 
-AuthUtil.saveAccount = function saveAccount(data, pool) {
+AuthUtil.saveAccount = function saveAccount(data, db) {
     //encrypt sensitive info
     data.password = bcrypt.hashSync( data.password, 10 );
-    pool.insertAccount(account);
+    db.insertAccount(account);
 };
 
-AuthUtil.validatePassword = function (email, password, mysql) {
+AuthUtil.validatePassword = function (email, password, db) {
     var deferred = Q.defer();
-    mysql.getAccountByEmail(email)
+    db.getAccountByEmail(email)
         .then(function (rows) {
             // get first (and only) row of user info
             var hash = rows[0].password;
@@ -28,9 +31,5 @@ AuthUtil.validatePassword = function (email, password, mysql) {
     console.log('returning deferred promise: ', deferred.promise);
     return deferred.promise;
 };
-// function validatePassword(data, pool) {
-//     var rows = pool.getAccountByEmail(data.email);
-//     console.log(rows);
-// };
 
 module.exports = AuthUtil;

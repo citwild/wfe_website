@@ -13,20 +13,21 @@ var express = require('express'),
     UserAccount = require('./utilities/models/userAccount'),
     AuthUtil = require('./utilities/account/authUtil');
 
-//*******DEMONSTRATING CONFIG SETUP*********
+//************CONFIGURE SERVER**************
 var appConfig = new ConfigUtil.init();
-//*****DEMONSTRATING MYSQL CONNECTION*******
-dbinfo = appConfig.dbInfo;
 var db = new DB();
+dbinfo = appConfig.dbInfo;
 db.createPool(dbinfo.host, dbinfo.user, dbinfo.password, dbinfo.database);
-db.getAllAccounts().then(function (rows) {
-    // nothing
-}).catch(function (err) {
-    console.log(err.message);
-    console.log(err.stack);
-});
+//******************************************
+
+// DB EXAMPLES
+// db.getAllAccounts().then(function (rows) {
+//     // nothing
+// }).catch(function (err) {
+//     console.log(err.message);
+//     console.log(err.stack);
+// });
 // db.getAccountByEmail('test@test.com');
-//*******DEMONSTRATING SAVING ACCOUNT*******
 // var user = new UserAccount({
 //    first_name:'Tester',
 //    last_name:'Test',
@@ -42,7 +43,7 @@ var config = require('./config.js'),    //config file contains all tokens and ot
 var app = express();
 
 //===============PASSPORT===============
-// Use the LocalStrategy within Passport to login/”signin” users.
+// Login: Local Strategy
 passport.use('login', new LocalStrategy(
     {
         usernameField: 'email',
@@ -51,22 +52,18 @@ passport.use('login', new LocalStrategy(
     function (req, username, password, done) {
         AuthUtil.validatePassword(username, password, db)
             .then(function (user) {
-                console.log('We got passed validation!');
-                console.log('User data is: ', user);
                 if (user) {
                     var usersName = user.first_name + " " + user.last_name;
-                    console.log(usersName + " logged in!");
                     req.session.success = 'You are successfully logged in ' + usersName + '!';
                     done(null, user);
                 } else {
-                    console.log("COULD NOT LOG IN");
-                    req.session.error = 'Could not log user in. Please try again.'; //inform user could not log them in
+                    req.session.error = 'Could not log user in. Please try again.';
                     done(null, user);
                 }
             });
     }
 ));
-// Use the LocalStrategy within Passport to register/"signup" users.
+// Register: Local Strategy
 passport.use('local-signup', new LocalStrategy(
     {
         passReqToCallback: true
@@ -102,6 +99,8 @@ passport.deserializeUser(function (obj, done) {
     console.log("deserializing " + obj);
     done(null, obj);
 });
+
+
 //===============EXPRESS================
 // Configure Express
 app.use(logger('combined'));
