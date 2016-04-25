@@ -38,7 +38,7 @@
             <li>
               {{#if user}}
                 <p class="navbar-text">
-                  <strong>Hi,</strong> 
+                  <strong>Hi, {{user.first_name}} {{user.last_name}}</strong>
                   <img src="{{user.avatar}}" width="20" height="20"> 
                   {{user.username}}
                 </p>

@@ -1,28 +1,16 @@
-{{#if user}}
-  <div class="jumbotron">
-    <h1>WFE User Authentication</h1>
-    <p>Below is your research data!</p>
-  </div>
-  <div class="panel panel-default">
+<div class="jumbotron">
+    <h1>WFE Research Hub</h1>
+</div>
+<div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Profile Information</h3>
+        <p class="panel-title">Profile Information</p>
     </div>
     <div class="panel-body">
-        {{#if user.permissions == "root"}}
-            <h4>{{user.permissions}}</h4>
-        {{/if}}
+        <h4>{{user.permissions}}</h4>
+        <!-- FOR ROOT ONLY -->
+        <a href="/admin/crudUser">Add, modify, or delete a user</a>
+        <br>
+        <a href="/view-data/home">View your data</a>
     </div>
-  </div>
-
-{{else}}
-  <div class="jumbotron">
-    <h1>WFE User Authentication</h1>
-    <p>Sign in and view your research data!</p>
-    <a href="/signin" class="btn btn-primary btn-lg" role="button">
-    <span class="glyphicon glyphicon-user"></span>
-    Sign in
-    </a>
-  </div>
-
-{{/if}}
+</div>
 

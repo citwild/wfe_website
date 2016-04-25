@@ -3,7 +3,8 @@
  */
 var schemas = require('./schemas'),
     _ = require('lodash'),
-    db = require('../db/db');
+    db = require('../db/db'),
+    bcrypt = require('bcryptjs');
 
 var UserAccount = function(data) {
     this.data = data;
@@ -21,6 +22,8 @@ UserAccount.prototype.setData = function setData(data) {
     data = data || {};
     userSchema = schemas.userAccount;
     this.data =  _.pick(_.defaults(data, userSchema), _.keys(userSchema));
+    // also hash the password
+    this.data.password = bcrypt.hashSync(this.data.password, 10);
 };
 
 module.exports = UserAccount;

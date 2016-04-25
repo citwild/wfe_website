@@ -28,8 +28,12 @@ AuthUtil.validatePassword = function (email, password, db) {
                 deferred.resolve(false);
             }
         });
-    console.log('returning deferred promise: ', deferred.promise);
     return deferred.promise;
+};
+
+AuthUtil.parsePermissions = function (user) {
+    var permissions = JSON.parse('[' + user.permissions + ']');
+    console.log(permissions);
 };
 
 module.exports = AuthUtil;

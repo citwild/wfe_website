@@ -89,17 +89,22 @@ passport.use('local-signup', new LocalStrategy(
     }
 ));
 
-// Passport session setup.
+// Passport session setup
 passport.serializeUser(function (user, done) {
-    console.log("serializing " + user.username);
     done(null, user);
 });
 
 passport.deserializeUser(function (obj, done) {
-    console.log("deserializing " + obj);
     done(null, obj);
 });
 
+// Include with routes to ensure authentication
+function isLoggedIn(req, res, next) {
+    if (req.user)
+        next();
+    else
+        res.redirect('/');
+}
 
 //===============EXPRESS================
 // Configure Express
@@ -140,38 +145,60 @@ var hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+
+
 //=============== ROUTES ===============
-// This section will hold our Routes
-//======================================
-//displays our homepage
+//displays entry page, requesting sign-in
 app.get('/', function (req, res) {
-    res.render('home', {user: req.user});
+    res.render('signin');
 });
 
-//displays our signup page
-app.get('/signin', function (req, res) {
-    res.render('signin');
+//displays main page for authenticated users
+app.get('/home', isLoggedIn, function (req, res) {
+    res.render('home', {
+        user: req.user
+    });
 });
 
 // ADMIN PAGES
 
 // Send Account Invite Page
-app.get('/admin/sendInvite', function (req, res) {
-    res.render('admin/sendInvite');
+app.get('/admin/crudUser', isLoggedIn, function (req, res) {
+    res.render('admin/crudUser');
+});
+
+// Add user data to database
+app.post('/admin/createUser', isLoggedIn, function(req, res) {
+    var user;
+    console.log(req.body);
+    if (req.body.password === req.body.password_confirmed) {
+        user = new UserAccount();
+        user.setData(req.body);
+        db.insertAccount(user.data)
+            .then(function () {
+                req.session.success = 'User successfully added!';
+            }).catch(function (err) {
+                req.session.error = 'There was an error adding the user. Please try again.';
+                console.log(err.message);
+                console.log(err.stack);
+            });
+    } else {
+        req.session.error = 'The two passwords provided to not match. Please try again.';
+    }
+    res.redirect('/admin/crudUser');
 });
 
 // Send Account Invite Page
-app.post('/admin/sendInvite/send', function (req, res) {
+app.post('/admin/sendInvite/send', isLoggedIn, function (req, res) {
     // TODO fully implement and test nodemailer
     var email = req.body.email,
         transporter = nodemailer.createTransport('smtps://user%40gmail.com:pass@smtp.gmail.com');
 
     var mailOptions = {
-        from: '"WFE Admin" <user@gmail.com>',
-        to: email,
-        subject: "You're Invited to Use the Wide-Field Ethnography Platform!",
-        html: "<p>this is a test</p>"
-
+        from    : '"WFE Admin" <user@gmail.com>',
+        to      : email,
+        subject : "You're Invited to Use the Wide-Field Ethnography Platform!",
+        html    : "<p>this is a test</p>"
     };
 
     // transporter.sendMail(mailOptions, function(err, info) {
@@ -184,49 +211,17 @@ app.post('/admin/sendInvite/send', function (req, res) {
 });
 
 
-// ACCOUNT CREATION
-
-// For users to create their account
-app.get('/createAccount', function (req, res) {
-    // Invitees are sent a token query parameter
-    var inviteToken = req.query.invite;
-
-    // pass token along to form...
-
-    res.render('account/createAccount');
-});
-
-// Creates the account
-app.post('/createAccount/submit', function (req, res) {
-    var userInfo = req.body;
-
-    // validateInput();         <-- for form inputs and checking the token
-    // createAccount(userInfo); <-- for storing the user info into the database
-
-    console.log(userInfo);
-    res.redirect('/');  // probably redirect user to main UI
-});
-
-//sends the request through our local signup strategy, and if successful takes user to homepage, otherwise returns then to signin page
-app.post('/account/submit-request', passport
-    .authenticate('local-signup', {
-        successRedirect: '/',
-        failureRedirect: '/signin'
-    })
-);
-
 //sends the request through our local login/signin strategy, and if successful takes user to homepage, otherwise returns then to signin page
 app.post('/login',
     passport.authenticate('login', {
-        successRedirect: '/',
-        failureRedirect: '/signin'
+        successRedirect: '/home',
+        failureRedirect: '/'
     })
 );
 
 //logs user out of site, deleting them from the session, and returns to homepage
 app.get('/logout', function (req, res) {
     var name = req.user.username;
-    console.log("LOGGIN OUT " + req.user.username)
     req.logout();
     res.redirect('/');
     req.session.notice = "You have successfully been logged out " + name + "!";

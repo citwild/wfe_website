@@ -1,0 +1,58 @@
+<div class="jumbotron">
+    <h1>Modify Users</h1>
+    <p>Add, modify, or delete users of WFE.</p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Add User Directly</div>
+        <div class="panel-body">
+            <form id="create-user" action="/admin/createUser" method="post">
+                <label>First name</label>
+                <input type="text" name="first_name"/>
+                <br>
+                <label>Last name</label>
+                <input type="text" name="last_name"/>
+                <br>
+                <label>Email</label>
+                <input type="email" name="email"/>
+                <br>
+                <label>Password</label>
+                <input type="password" name="password"/>
+                <br>
+                <label>Confirm password</label>
+                <input type="password" name="password_confirmed"/>
+                <br>
+                <label>Permissions</label>
+                <input type="text" name="permissions"/>
+                <br>
+                <input type="submit" class="btn btn-primary btn-sm" value="Add User"/>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Invite User</div>
+        <div class="panel-body">
+            <form id="invite-user" action="/admin/sendInvite/send" method="post">
+                <label>Invitee's email</label>
+                <input type="email" name="email"/>
+
+                <input type="submit" class="btn btn-primary btn-sm" value="Send Invite"/>
+            </form>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Remove User</div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Modify User Permissions</div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+
+</div>

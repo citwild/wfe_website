@@ -33,10 +33,8 @@ DB.prototype.getAllAccounts = function getAllAccounts() {
             conn.query('SELECT * FROM user_account', function (err, rows) {
                 if (!err) {
                     success(rows);
-                    console.log('Retrieved rows: ', rows);
                 } else {
                     failure(rows);
-                    console.log('Error retrieving all accounts');
                 }
             });
             conn.release();
@@ -45,17 +43,19 @@ DB.prototype.getAllAccounts = function getAllAccounts() {
 };
 
 // save account to user_account table
-// TODO: implement promise
 DB.prototype.insertAccount = function insertAccount(data) {
-    this.connPool.getConnection(function (err, conn) {
-        if (err) console.log(err);
-        conn.query('INSERT INTO user_account SET ?', data, function(err) {
-            if (!err)
-                console.log('User info successfully added');
-            else
-                console.log('Error inserting account; Account info: ', data);
+    var connPool = this.connPool;
+    return new Promise(function(success, failure) {
+        connPool.getConnection(function (err, conn) {
+            if (err) failure(conn);
+            conn.query('INSERT INTO user_account SET ?', data, function(err) {
+                if (!err)
+                    success();
+                else
+                    failure();
+            });
+            conn.release();
         });
-        conn.release();
     });
 };
 
@@ -64,18 +64,15 @@ DB.prototype.getAccountByEmail = function getAccountByEmail(email) {
     var connPool = this.connPool;
     return new Promise(function(success, failure) {
         connPool.getConnection(function (err, conn) {
-            if (err) console.log(err);
+            if (err) failure(conn);
             conn.query({
                 sql   : 'SELECT * FROM user_account WHERE email = ?',
                 values: [email]
             }, function(err, rows) {
-                if (!err) {
-                    console.log('User info successfully retrieved: ', rows);
+                if (!err)
                     success(rows);
-                } else {
-                    console.log('Error retrieving account with email: ', email);
+                else
                     failure(rows);
-                }
             });
             conn.release();
         });
